@@ -6,7 +6,7 @@ The application is divided into three main modules:
 
 ### 1. Data Storage Module
 - **Hash Table Module**: Manages insertion, searching, deletion, and updating of contacts using hashing based on contact names.
-- **Trie Module**: Allows for prefix-based access by managing insertion, searching, and deletion of contacts.
+- **Trie Module**: Allows for prefix-based access by managing insertion, searching, and deletion of contacts
 
 ### 2. Operations Module
 Contains the core functions that operate on the data, including insertion, searching, deletion, updating, and sorting contacts.
