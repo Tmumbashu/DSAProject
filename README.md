@@ -1,40 +1,41 @@
-Phonebook Application Documentation
-Modules
+# Phonebook Application Documentation
 
-The application has three main modules:
+## Modules
 
-1. Data Storage Module:.
-   - Hash Table Module: Manages insertion, searching, deletion, and updating contacts by hashing the contact names.
-   - Trie Module: Manages insertion, searching, and deleting contacts with prefix-based access.
-   
-2. Operations Module: 
-Contains the core functions to operate on the data, including insertion, searching, deletion, updating, and sorting contacts.
+The application is divided into three main modules:
 
-3. Utility Module: 
-Provides helper functions, such as sorting, validating inputs, and handling the display of contacts.
+### 1. Data Storage Module
+- **Hash Table Module**: Manages insertion, searching, deletion, and updating of contacts using hashing based on contact names.
+- **Trie Module**: Allows for prefix-based access by managing insertion, searching, and deletion of contacts.
 
+### 2. Operations Module
+Contains the core functions that operate on the data, including insertion, searching, deletion, updating, and sorting contacts.
 
-Functions
+### 3. Utility Module
+Provides helper functions such as sorting, input validation, and handling the display of contacts.
 
-1. Data Storage Module:
-   - InitializeHashTable(): Initializes the hash table for contact storage.
-   - InitializeTrie(): Initializes the Trie for contact storage.
-   
-2. Operations Module:
-   - InsertContact (name, phone): Adds a new contact by inserting it into both the Hash Table and Trie.
-   - SearchContact(name): Searches for a contact by name using both the Hash Table and Trie.
-   - DeleteContact(name): Deletes a contact by name from both the Hash Table and Trie.
-   - UpdateContact(name, newPhone): Updates a contact’s phone number.
-   - SortContacts(): Sorts contacts alphabetically, leveraging the Trie’s inherent ordering or sorting the hash table output.
-   
-3. Utility Module:
-   - ValidatePhoneNumber(phone): Validates the phone number format.
-   - DisplayContacts(): Displays all contacts in alphabetical order by iterating through the Trie or Hash Table.
+## Functions
 
-Pseudocode
+### Data Storage Module
+- **InitializeHashTable()**: Initializes the hash table for storing contacts.
+- **InitializeTrie()**: Initializes the Trie for storing contacts.
 
-1. Insert Contact
+### Operations Module
+- **InsertContact(name, phone)**: Adds a new contact to both the Hash Table and Trie.
+- **SearchContact(name)**: Searches for a contact by name in both the Hash Table and Trie.
+- **DeleteContact(name)**: Deletes a contact by name from both the Hash Table and Trie.
+- **UpdateContact(name, newPhone)**: Updates a contact’s phone number.
+- **SortContacts()**: Sorts contacts alphabetically using the Trie’s inherent order or by sorting the hash table output.
 
+### Utility Module
+- **ValidatePhoneNumber(phone)**: Validates the format of a phone number.
+- **DisplayContacts()**: Displays all contacts alphabetically by iterating through the Trie or Hash Table.
+
+## Pseudocode
+
+### 1. Insert Contact
+
+```plaintext
 FUNCTION InsertContact(root, name, phone)
     node ← root
     FOR each character in name
@@ -46,11 +47,11 @@ FUNCTION InsertContact(root, name, phone)
     node.isEndOfWord ← TRUE
     node.phone ← phone
 END FUNCTION
+```
 
-2. Search Contact
+### 2. Search Contact
 
-plaintext
-
+```plaintext
 FUNCTION SearchContact(root, name)
     node ← root
     FOR each character in name
@@ -65,11 +66,11 @@ FUNCTION SearchContact(root, name)
         RETURN "Contact Not Found"
     END IF
 END FUNCTION
+```
 
-3. Display All Contacts
+### 3. Display All Contacts
 
-plaintext
-
+```plaintext
 FUNCTION DisplayContacts(node, prefix)
     IF node.isEndOfWord IS TRUE
         PRINT prefix + " : " + node.phone
@@ -80,13 +81,13 @@ FUNCTION DisplayContacts(node, prefix)
         END IF
     END FOR
 END FUNCTION
+```
 
-    Explanation: This function performs a depth-first traversal of the Trie. It prints each contact in alphabetical order by recursively traversing all children nodes.
+Explanation: This function performs a depth-first traversal of the Trie, printing each contact in alphabetical order by recursively traversing all children nodes.
 
-4. Delete Contact
+### 4. Delete Contact
 
-plaintext
-
+```plaintext
 FUNCTION DeleteContact(node, name, depth)
     IF node IS NULL
         RETURN FALSE
@@ -105,13 +106,13 @@ FUNCTION DeleteContact(node, name, depth)
     END IF
     RETURN FALSE
 END FUNCTION
+```
 
-    Explanation: The delete function is recursive. It goes down the Trie following the name, and once the end of the word or search term is reached, it marks it as not an end and removes unnecessary nodes if they don't branch out.
+Explanation: The delete function is recursive. It goes down the Trie following the name, and once the end of the word is reached, it marks it as not an end and removes unnecessary nodes if they don't branch out.
 
-5. Update Contact
+### 5. Update Contact
 
-plaintext
-
+```plaintext
 FUNCTION UpdateContact(root, name, newPhone)
     node ← root
     FOR each character in name
@@ -127,17 +128,13 @@ FUNCTION UpdateContact(root, name, newPhone)
         RETURN "Contact Not Found"
     END IF
 END FUNCTION
+```
 
+## Flowchart
 
-Flowchart
-
-
-1. Start: Begin with system initialization.
-2. Choose Operation: Branch based on user selection (Insert, Search, Delete, Update).
-3. Insert Contact: Adds a contact node in both Hash Table and Trie.
-4. Search Contact: Searches by name and displays result.
-5. Delete Contact: Removes contact nodes, handling shared nodes in Trie if necessary.
-6. End: End the flow after completing the operation.
-
-
-
+1. **Start**: Begin with system initialization.
+2. **Choose Operation**: User selects an operation (Insert, Search, Delete, Update).
+3. **Insert Contact**: Adds a contact node in both the Hash Table and Trie.
+4. **Search Contact**: Searches for the contact by name and displays the result.
+5. **Delete Contact**: Removes contact nodes, handling shared nodes in the Trie if necessary.
+6. **End**: End the flow after completing the operation.
