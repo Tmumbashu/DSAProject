@@ -1,0 +1,60 @@
+﻿@page "/contact-search"
+@using DSAProject.Models
+@using DSAProject.OperationsModule
+@inject ContactOperations contactOperations
+
+<h3>Contact Search</h3>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="form-group">
+                <label for="searchQuery">Search by Name</label>
+                <input type="text" class="form-control" id="searchQuery" placeholder="Enter name" @bind="SearchQuery" @oninput="HandleSearch" />
+            </div>
+        </div>
+    </div>
+
+    @if (SearchResults.Count == 0 && !string.IsNullOrEmpty(SearchQuery))
+    {
+        <div class="alert alert-warning mt-3">No contacts found with the name containing '@SearchQuery'.</div>
+    }
+    else if (SearchResults.Count > 0)
+    {
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var contact in SearchResults)
+                {
+                    <tr>
+                        <td>@contact.Name</td>
+                        <td>@contact.Phone</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private string SearchQuery { get; set; } = string.Empty;
+    private List<Contact> SearchResults { get; set; } = new List<Contact>();
+
+    private void HandleSearch()
+    {
+        if (string.IsNullOrWhiteSpace(SearchQuery))
+        {
+            SearchResults.Clear();
+        }
+        else
+        {
+            SearchResults = contactOperations.SortContacts()
+                                             .FindAll(c => c.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+}
