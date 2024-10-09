@@ -1,8 +1,14 @@
-﻿namespace DSAProject.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DSAProject.Models
 {
     public class Contact
     {
+        [Required(ErrorMessage = "Name is required.")]
         public string Name { get; set; }
+
+        [Required(ErrorMessage = "Phone number is required.")]
+        [RegularExpression(@"^0\d{4}$", ErrorMessage = "Phone number must start with '0' and be exactly 5 digits.")]
         public string Phone { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime? UpdatedDate { get; set; }

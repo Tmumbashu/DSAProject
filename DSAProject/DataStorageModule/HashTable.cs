@@ -58,18 +58,37 @@ namespace DSAProject.DataStorageModule
         /// <summary>
         /// Updates a contact's phone number
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="currentName"></param>
+        /// <param name="currentPhone"></param>
+        /// <param name="newName"></param>
         /// <param name="newPhone"></param>
         /// <returns></returns>
-        public bool UpdateContact(string name, string newPhone)
+        public bool UpdateContact(string currentName, string currentPhone, string newName, string newPhone)
         {
-            if (contacts.TryGetValue(name, out Contact contact))
+            if (contacts.TryGetValue(currentName, out var contact) && contact.Phone == currentPhone)
             {
-                contact.UpdatePhone(newPhone);
-                return true;
+                // Remove the old contact if the name is being updated
+                if (currentName != newName)
+                {
+                    contacts.Remove(currentName);
+                    contact.Name = newName;
+                }
+
+                // Update the phone number
+                contact.Phone = newPhone;
+
+                // Add contact back if name changed
+                if (!contacts.ContainsKey(newName))
+                {
+                    contacts.Add(newName, contact);
+                }
+
+                return true; 
             }
-            return false; // Contact not found
+
+            return false; // Contact not found with the specified current name and phone
         }
+
 
         /// <summary>
         /// Retrieves all contacts

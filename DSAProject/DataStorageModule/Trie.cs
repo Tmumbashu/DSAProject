@@ -65,6 +65,41 @@ namespace DSAProject.DataStorageModule
             return node.IsEndOfWord ? node.Contact : null;
         }
 
+        public List<Contact> SearchContactsByPrefix(string prefix)
+        {
+            var results = new List<Contact>();
+            var node = root;
+
+            foreach (var ch in prefix)
+            {
+                if (node.Children.TryGetValue(ch, out var nextNode))
+                {
+                    node = nextNode;
+                }
+                else
+                {
+                    return results; // No match, return empty list
+                }
+            }
+
+            // Perform a depth-first traversal from this node to find all contacts
+            FindAllContacts(node, prefix, results);
+            return results;
+        }
+
+        private void FindAllContacts(TrieNode node, string prefix, List<Contact> results)
+        {
+            if (node.IsEndOfWord)
+            {
+                results.Add(node.Contact); // Assuming each end node contains a Contact object
+            }
+
+            foreach (var child in node.Children)
+            {
+                FindAllContacts(child.Value, prefix + child.Key, results);
+            }
+        }
+
         // Deletes a contact by name
         public bool DeleteContact(string name)
         {
@@ -98,24 +133,45 @@ namespace DSAProject.DataStorageModule
             return false;
         }
 
-        // Updates a contact's phone number
-        public bool UpdateContact(string name, string newPhone)
+        /// <summary>
+        /// Updates a contact's phone number
+        /// </summary>
+        /// <param name="currentName"></param>
+        /// <param name="currentPhone"></param>
+        /// <param name="newName"></param>
+        /// <param name="newPhone"></param>
+        /// <returns></returns>
+        public bool UpdateContact(string currentName, string currentPhone, string newName, string newPhone)
         {
-            TrieNode node = root;
-            foreach (char ch in name)
+            var node = root;
+            foreach (var ch in currentName)
             {
                 if (!node.Children.ContainsKey(ch))
                 {
-                    return false; // Contact not found
+                    return false; // Contact not found in the trie
                 }
                 node = node.Children[ch];
             }
-            if (node.IsEndOfWord)
+
+            if (node.IsEndOfWord && node.Contact.Phone == currentPhone)
             {
-                node.Contact.UpdatePhone(newPhone);
-                return true;
+                // If names are different, we need to remove the old contact and add the new one
+                if (currentName != newName)
+                {
+                    DeleteContact(currentName); // Custom method to remove old contact
+
+                    Contact newContact = new Contact(newName, newPhone);
+                    InsertContact(newContact);
+                }
+                else
+                {
+                    node.Contact.Phone = newPhone; // Update phone if name is the same
+                }
+
+                return true; // Successfully updated
             }
-            return false;
+
+            return false; // Contact not found with the specified current name and phone
         }
 
         // Retrieves all contacts with a given prefix

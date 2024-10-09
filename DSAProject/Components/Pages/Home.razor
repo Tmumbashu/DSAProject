@@ -1,0 +1,164 @@
+﻿@page "/"
+@using DSAProject.Models
+@using DSAProject.OperationsModule
+@inject ContactOperations contactOperations
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+<MudDialogProvider />
+<PageTitle>Home</PageTitle>
+
+<MudCard>
+    <MudCardContent>
+        <MudText>DSA Telephony</MudText>
+        <MudText Typo="Typo.body2">The Telez.</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="() => OpenCreateDialog()">Create Contact</MudButton>
+    </MudCardActions>
+</MudCard>
+
+<MudDivider></MudDivider>
+
+<MudCard>
+    <MudCardContent>
+        <MudText>Phony Book</MudText>
+        <div class="d-flex mb-2">
+            <MudTextField @bind-Value="_searchString" Placeholder="Search Contacts" Adornment="Adornment.Start" Immediate="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="flex-grow-1"
+                          OnKeyDown="@((e) => { if (e.Key == "Enter") PerformSearch(_searchString); })" />
+
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="() => PerformSearch(_searchString)" Class="ml-2">
+                Search
+            </MudButton>
+        </div>
+
+
+        <MudList T="string">
+            @foreach (var contact in Contacts)
+            {
+                var initial = contact.Name?.FirstOrDefault().ToString().ToUpper();
+                <MudListItem>
+                    <AvatarContent>
+                        <MudAvatar Color="Color.Primary">@initial</MudAvatar>
+                    </AvatarContent>
+                    <ChildContent>
+
+                        <MudGrid>
+
+                            <MudItem xs="6" sm="3">
+                                Name : @contact.Name
+                            </MudItem>
+                            <MudItem xs="6" sm="3">
+                              Phone : @contact.Phone
+                            </MudItem>
+                            <MudItem xs="6" sm="3">
+                                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="() => OpenEditDialog(contact)" StartIcon="@Icons.Material.Filled.Edit">
+                                    Edit
+                                </MudButton>
+                            </MudItem>
+                            <MudItem xs="6" sm="3">
+                                <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="() => DeleteContact(contact)" StartIcon="@Icons.Material.Filled.Delete">
+                                    Delete
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </ChildContent>
+                </MudListItem>
+            }
+
+        </MudList>
+
+    </MudCardContent>
+
+</MudCard>
+
+
+@code {
+    private List<Contact> Contacts = new List<Contact>();
+    private string _searchString;
+    private string _message;
+
+    protected override void OnInitialized()
+    {
+        LoadContacts();
+    }
+
+    // Load Contacts
+    private void LoadContacts()
+    {
+        Contacts = contactOperations.SortContacts().ToList();
+    }
+
+    // Perform Search using contactOperations Module
+    private void PerformSearch(string searchText)
+    {
+        _searchString = searchText;
+        Contacts = contactOperations.SearchContacts(_searchString).ToList();
+    }
+
+    // Open Edit Dialog
+    private async Task OpenEditDialog(Contact contact)
+    {
+        var originalName = contact.Name;
+        var originalPhone = contact.Phone;
+
+        var parameters = new DialogParameters { ["ContactToEdit"] = contact };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = DialogService.Show<ContactEditDialog>("Edit Contact", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var editedContact = (Contact)result.Data;
+
+            // Use the updated method with four parameters to apply changes
+            bool isUpdated = contactOperations.UpdateContact(originalName, originalPhone, editedContact.Name, editedContact.Phone);
+
+            if (isUpdated)
+            {
+                _message = $"Contact '{originalName}' updated to '{editedContact.Name}' successfully.";
+                LoadContacts();
+            }
+            else
+            {
+                _message = $"Failed to update contact '{originalName}'. It may not exist.";
+            }
+        }
+    }
+
+    private async Task OpenCreateDialog()
+    {
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = DialogService.Show<ContactCreateDialog>("Create Contact", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var editedContact = (Contact)result.Data;
+
+            try
+            {
+                contactOperations.InsertContact(editedContact.Name, editedContact.Phone);
+                _message = $"Contact '{editedContact.Name}' created successfully.";
+                LoadContacts();
+            }
+            catch (Exception ex)
+            {
+                _message = $"Failed to create contact '{editedContact.Name}'. {ex.Message}";
+            }
+
+        }
+    }
+
+
+    // Delete Contact
+    private void DeleteContact(Contact contact)
+    {
+        contactOperations.DeleteContact(contact.Name);
+        _message = $"Contact '{contact.Name}' has been deleted.";
+        LoadContacts();
+    }
+}

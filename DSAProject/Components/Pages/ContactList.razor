@@ -1,0 +1,112 @@
+﻿@page "/contact-list"
+@using DSAProject.Models
+@using DSAProject.OperationsModule
+@inject ContactOperations contactOperations
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+<MudDialogProvider />
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudText Typo="Typo.h4">Contact List</MudText>
+
+    <!-- Search Field with Button -->
+    <div class="d-flex mb-2">
+        <MudTextField @bind-Value="_searchString" Placeholder="Search Contacts" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="flex-grow-1"
+                      OnKeyDown="@((e) => { if (e.Key == "Enter") PerformSearch(_searchString); })" />
+
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="() => PerformSearch(_searchString)" Class="ml-2">
+            Search
+        </MudButton>
+    </div>
+
+    <!-- Contact List -->
+    <div>
+        @foreach (var contact in Contacts)
+        {
+            <div class="d-flex justify-between mb-2">
+                <div>
+                    <MudText Typo="Typo.body1">@contact.Name</MudText>
+                    <MudText Typo="Typo.body2">@contact.Phone</MudText>
+                </div>
+                <div>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="() => OpenEditDialog(contact)" StartIcon="@Icons.Material.Filled.Edit">
+                        Edit
+                    </MudButton>
+
+                    <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="() => DeleteContact(contact)" StartIcon="@Icons.Material.Filled.Delete">
+                        Delete
+                    </MudButton>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(_message))
+    {
+        <MudAlert Severity="Severity.Info" Class="mt-3">@_message</MudAlert>
+    }
+</MudContainer>
+
+@code {
+    private List<Contact> Contacts = new List<Contact>();
+    private string _searchString;
+    private string _message;
+
+    protected override void OnInitialized()
+    {
+        LoadContacts();
+    }
+
+    // Load Contacts
+    private void LoadContacts()
+    {
+        Contacts = contactOperations.SortContacts().ToList();
+    }
+
+    // Perform Search using contactOperations Module
+    private void PerformSearch(string searchText)
+    {
+        _searchString = searchText;
+        Contacts = contactOperations.SearchContacts(_searchString).ToList();
+    }
+
+    // Open Edit Dialog
+    private async Task OpenEditDialog(Contact contact)
+    {
+        var originalName = contact.Name;
+        var originalPhone = contact.Phone;
+
+        var parameters = new DialogParameters { ["ContactToEdit"] = contact };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = DialogService.Show<ContactEditDialog>("Edit Contact", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var editedContact = (Contact)result.Data;
+
+            // Use the updated method with four parameters to apply changes
+            bool isUpdated = contactOperations.UpdateContact(originalName, originalPhone, editedContact.Name, editedContact.Phone);
+
+            if (isUpdated)
+            {
+                _message = $"Contact '{originalName}' updated to '{editedContact.Name}' successfully.";
+                LoadContacts();
+            }
+            else
+            {
+                _message = $"Failed to update contact '{originalName}'. It may not exist.";
+            }
+        }
+    }
+
+    // Delete Contact
+    private void DeleteContact(Contact contact)
+    {
+        contactOperations.DeleteContact(contact.Name);
+        _message = $"Contact '{contact.Name}' has been deleted.";
+        LoadContacts();
+    }
+}

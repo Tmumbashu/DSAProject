@@ -1,0 +1,67 @@
+﻿@using DSAProject.Models
+@using DSAProject.UtilityModule  <!-- Assuming PhoneNumberValidator is here -->
+@inject IDialogService DialogService
+
+@code {
+    [CascadingParameter] MudDialogInstance DialogInstance { get; set; }
+
+    private Contact NewContact { get; set; } = new Contact();
+    private List<string> errors = new List<string>();
+
+    private void Save()
+    {
+        errors.Clear();  // Clear any previous error messages
+
+        // Validate Name
+        if (string.IsNullOrWhiteSpace(NewContact.Name))
+        {
+            errors.Add("Name is required.");
+        }
+
+        // Validate Phone Number
+        if (string.IsNullOrWhiteSpace(NewContact.Phone))
+        {
+            errors.Add("Phone number is required.");
+        }
+        else if (!PhoneNumberValidator.ValidatePhoneNumber(NewContact.Phone))
+        {
+            errors.Add("Phone number must start with '0' and be exactly 5 digits.");
+        }
+
+        // Check for errors and proceed if validation passes
+        if (errors.Count == 0)
+        {
+            DialogInstance.Close(DialogResult.Ok(NewContact));
+        }
+    }
+
+    private void Cancel()
+    {
+        DialogInstance.Cancel();
+    }
+}
+
+<MudDialog>
+    
+    <DialogContent>
+        <MudTextField Label="Name" @bind-Value="NewContact.Name" HelperText="Enter contact name" />
+        <MudTextField Label="Phone Number" @bind-Value="NewContact.Phone" HelperText="Phone number must start with '0' and be 5 digits long." />
+
+        @if (errors.Any())
+        {
+            <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="mt-2">
+                <ul>
+                    @foreach (var error in errors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </MudAlert>
+        }
+    </DialogContent>
+    
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

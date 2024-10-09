@@ -1,0 +1,57 @@
+﻿@page "/contact-form"
+@using DSAProject.Models
+@using DSAProject.OperationsModule
+
+@inject ContactOperations contactOperations
+@rendermode InteractiveServer
+
+
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudText Typo="Typo.h4">Contact Form</MudText>
+
+    <MudForm @ref="form" @onsubmit="SaveContact">
+        <MudTextField @bind-Value="Contact.Name" Label="Name" Required="true" HelperText="Enter contact name" />
+        
+        <MudTextField @bind-Value="Contact.Phone" Label="Phone Number" Required="true"
+                      HelperText="Phone number must start with '0' and be 5 digits long."
+                      Pattern="^0\d{4}$" PatternError="Phone number must start with '0' and be exactly 5 digits." />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveContact">Save Contact</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="ClearForm" class="ml-2">Clear</MudButton>
+
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <MudAlert Severity="Severity.Info" Class="mt-3">@Message</MudAlert>
+        }
+    </MudForm>
+</MudContainer>
+
+@code {
+    private Contact Contact { get; set; } = new Contact();
+    private MudForm form;
+    private string Message { get; set; }
+
+    private async Task SaveContact()
+    {
+        await form.Validate();
+        
+        if (form.IsValid)
+        {
+            contactOperations.InsertContact(Contact.Name, Contact.Phone);
+            Message = $"Contact '{Contact.Name}' has been saved successfully.";
+            ClearForm();
+        }
+        else
+        {
+            Message = "Invalid input. Ensure all fields meet the validation criteria.";
+        }
+    }
+
+    private void ClearForm()
+    {
+        Contact = new Contact();
+     
+        Message = string.Empty;
+    }
+}

@@ -45,6 +45,23 @@ namespace DSAProject.OperationsModule
             return null;
         }
 
+        public IEnumerable<Contact> SearchContacts(string namePrefix)
+        {
+            var contacts = trie.SearchContactsByPrefix(namePrefix);
+            if (contacts.Any())
+            {
+                Console.WriteLine($"Contacts found for prefix '{namePrefix}':");
+                foreach (var contact in contacts)
+                {
+                    Console.WriteLine($"- {contact.Name} : {contact.Phone}");
+                }
+                return contacts;
+            }
+            Console.WriteLine($"No contacts found with prefix '{namePrefix}'.");
+            return Enumerable.Empty<Contact>();
+        }
+
+
         // Deletes a contact by name from both HashTable and Trie
         public bool DeleteContact(string name)
         {
@@ -61,19 +78,23 @@ namespace DSAProject.OperationsModule
         }
 
         // Updates a contact's phone number in both HashTable and Trie
-        public bool UpdateContact(string name, string newPhone)
+        public bool UpdateContact(string currentName, string currentPhone, string newName, string newPhone)
         {
-            bool hashTableUpdated = hashTable.UpdateContact(name, newPhone);
-            bool trieUpdated = trie.UpdateContact(name, newPhone);
+            // Check for the contact in the hash table first
+            bool hashTableUpdated = hashTable.UpdateContact(currentName, currentPhone, newName, newPhone);
+            bool trieUpdated = trie.UpdateContact(currentName, currentPhone, newName, newPhone);
 
+            // Confirm successful update only if both structures could update the contact
             if (hashTableUpdated && trieUpdated)
             {
-                Console.WriteLine($"Contact '{name}' updated successfully.");
+                Console.WriteLine($"Contact '{currentName}' updated to '{newName}' successfully.");
                 return true;
             }
-            Console.WriteLine($"Contact '{name}' not found or could not be updated.");
+
+            Console.WriteLine($"Contact '{currentName}' with phone '{currentPhone}' not found or could not be updated.");
             return false;
         }
+
 
         // Sorts contacts alphabetically and returns a list of sorted contacts
         public List<Contact> SortContacts()
