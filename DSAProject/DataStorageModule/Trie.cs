@@ -91,7 +91,7 @@ namespace DSAProject.DataStorageModule
         {
             if (node.IsEndOfWord)
             {
-                results.Add(node.Contact); // Assuming each end node contains a Contact object
+                results.Add(node.Contact); 
             }
 
             foreach (var child in node.Children)
