@@ -1,40 +1,97 @@
 # Phonebook Application Documentation
 
-## Modules
+## Project Overview
+This Phonebook Application is a simple yet efficient phonebook management system built using **Blazor** and **MudBlazor**. It allows users to **insert**, **search**, **delete**, **update**, and **sort contacts**, with an emphasis on efficient data structures such as **Hash Tables** and **Tries** for storage and retrieval. We are not connecting to a database as of now
 
-The application is divided into three main modules:
+### Key Features
+- **Contact Management**: Create, update, delete, and search contacts.
+- **Modular Design**: The app is structured into multiple modules, each focusing on a specific functionality.
+- **Custom Validation**: Phone numbers are validated to ensure they start with '0' and contain exactly 5 digits.
+- **Dialog Management**: Using `MudBlazor` dialogs for creating and editing contacts, providing a smooth UI/UX experience.
+- **Detailed Pseudocode**: Outlines the underlying logic, helping users and developers understand the data structure operations.
+
+## Table of Contents
+- [Modules](#modules)
+- [Project Structure](#project-structure)
+- [Functions](#functions)
+- [Pseudocode](#pseudocode)
+- [Setup Instructions](#setup-instructions)
+- [Dependencies](#dependencies)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Modules
+The application is divided into three primary modules:
 
 ### 1. Data Storage Module
-- **Hash Table Module**: Manages insertion, searching, deletion, and updating of contacts using hashing based on contact names.
-- **Trie Module**: Allows for prefix-based access by managing insertion, searching, and deletion of contacts
+Handles contact storage using a **Hash Table** and **Trie**, providing efficient insertion, searching, and deletion:
+- **Hash Table Module**: Supports operations such as insertion, searching, deletion, and updating based on contact names.
+- **Trie Module**: Enables efficient prefix-based searching, allowing contacts to be accessed and managed quickly by name.
 
 ### 2. Operations Module
-Contains the core functions that operate on the data, including insertion, searching, deletion, updating, and sorting contacts.
+Contains core functions that operate on the data and manage contacts:
+- **InsertContact**: Adds a new contact to both the Hash Table and Trie.
+- **SearchContact**: Searches for a contact by name.
+- **DeleteContact**: Deletes contacts from both data structures.
+- **UpdateContact**: Updates an existing contact’s name and/or phone number.
+- **SortContacts**: Sorts contacts alphabetically using the Trie or by sorting Hash Table output (optional).
 
 ### 3. Utility Module
-Provides helper functions such as sorting, input validation, and handling the display of contacts.
+This module provides helper functions to support the operations:
+- **ValidatePhoneNumber**: Ensures phone numbers start with '0' and contain exactly 5 digits.
+- **DisplayContacts**: Displays contacts alphabetically by iterating through the Trie or Hash Table.
+
+---
+
+## Project Structure
+The project is organized into multiple folders, ensuring modularity and separation of concerns as discussed above:
+```plaintext
+📂 PhonebookBlazorApp
+├── 📁 DataStorageModule
+│   ├── HashTable.cs         # Implements hash table-based contact storage
+│   └── Trie.cs              # Implements trie-based contact storage for prefix-based searching
+├── 📁 OperationsModule
+│   └── ContactOperations.cs # Core functions like insertion, deletion, update, and search
+├── 📁 UtilityModule
+│   └── PhoneNumberValidator.cs # Custom validation logic for phone numbers
+├── 📁 Components
+│   ├── ContactList.razor        # Lists contacts and provides edit/delete options
+│   ├── ContactEditDialog.razor  # Dialog for editing contacts
+│   └── ContactCreateDialog.razor# Dialog for creating new contacts
+├── 📁 wwwroot
+│   └── css
+│       └── app.css            # Additional styling
+├── Program.cs                 # Entry point for the Blazor application
+├── App.razor                  # Main app layout component
+└── README.md                  # Project documentation
+```
+
+---
 
 ## Functions
 
 ### Data Storage Module
-- **InitializeHashTable()**: Initializes the hash table for storing contacts.
-- **InitializeTrie()**: Initializes the Trie for storing contacts.
+- **InitializeHashTable()**: Initializes the hash table for contact storage.
+- **InitializeTrie()**: Initializes the Trie for storing contacts based on name prefixes.
 
 ### Operations Module
-- **InsertContact(name, phone)**: Adds a new contact to both the Hash Table and Trie.
-- **SearchContact(name)**: Searches for a contact by name in both the Hash Table and Trie.
+- **InsertContact(name, phone)**: Adds a contact to both the Hash Table and Trie.
+- **SearchContact(name)**: Searches for a contact by name.
 - **DeleteContact(name)**: Deletes a contact by name from both the Hash Table and Trie.
-- **UpdateContact(name, newPhone)**: Updates a contact’s phone number.
-- **SortContacts()**: Sort contacts alphabetically using the Trie’s inherent order or by sorting the hash table output.
+- **UpdateContact(currentName, currentPhone, newName, newPhone)**: Updates an existing contact’s details.
+- **SortContacts()**: Sorts contacts alphabetically using Trie’s inherent order or by sorting the Hash Table output.
 
 ### Utility Module
-- **ValidatePhoneNumber(phone)**: Validates the format of a phone number.
-- **DisplayContacts()**: Displays all contacts alphabetically by iterating through the Trie or Hash Table.
+- **ValidatePhoneNumber(phone)**: Checks if a phone number starts with '0' and is exactly 5 digits long.
+- **DisplayContacts()**: Lists all contacts in alphabetical order by performing a depth-first traversal of the Trie or sorting the Hash Table output.
+
+---
 
 ## Pseudocode
 
 ### 1. Insert Contact
-
 ```plaintext
 FUNCTION InsertContact(root, name, phone)
     node ← root
@@ -50,7 +107,6 @@ END FUNCTION
 ```
 
 ### 2. Search Contact
-
 ```plaintext
 FUNCTION SearchContact(root, name)
     node ← root
@@ -69,7 +125,6 @@ END FUNCTION
 ```
 
 ### 3. Display All Contacts
-
 ```plaintext
 FUNCTION DisplayContacts(node, prefix)
     IF node.isEndOfWord IS TRUE
@@ -83,10 +138,7 @@ FUNCTION DisplayContacts(node, prefix)
 END FUNCTION
 ```
 
-Explanation: This function performs a depth-first traversal of the Trie, printing each contact in alphabetical order by recursively traversing all children nodes.
-
 ### 4. Delete Contact
-
 ```plaintext
 FUNCTION DeleteContact(node, name, depth)
     IF node IS NULL
@@ -95,7 +147,7 @@ FUNCTION DeleteContact(node, name, depth)
     IF depth = LENGTH(name)
         IF node.isEndOfWord IS TRUE
             node.isEndOfWord ← FALSE
-            RETURN node.hasNoChildren()  // Check if node can be deleted
+            RETURN node.hasNoChildren()
         END IF
         RETURN FALSE
     END IF
@@ -108,10 +160,7 @@ FUNCTION DeleteContact(node, name, depth)
 END FUNCTION
 ```
 
-Explanation: The delete function is recursive. It goes down the Trie following the name, and once the end of the word is reached, it marks it as not an end and removes unnecessary nodes if they don't branch out.
-
 ### 5. Update Contact
-
 ```plaintext
 FUNCTION UpdateContact(root, name, newPhone)
     node ← root
@@ -130,11 +179,44 @@ FUNCTION UpdateContact(root, name, newPhone)
 END FUNCTION
 ```
 
-## Flowchart
+---
 
-1. **Start**: Begin with system initialization.
-2. **Choose Operation**: The user selects an operation (Insert, Search, Delete, Update).
-3. **Insert Contact**: Adds a contact node in both the Hash Table and Trie.
-4. **Search Contact**: Searches for the contact by name and displays the result.
-5. **Delete Contact**: Removes contact nodes, handling shared nodes in the Trie if necessary.
-6. **End**: End the flow after completing the operation.
+## Setup Instructions
+
+### Prerequisites
+- **.NET SDK**: Download the latest version from [here](https://dotnet.microsoft.com/download).
+- **Node.js**: For frontend development tasks.
+
+### Installation
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/phonebook-blazor-app.git
+   cd phonebook-blazor-app
+   ```
+
+2. **Restore dependencies**:
+   ```bash
+   dotnet restore
+   ```
+
+3. **Build the project**:
+   ```bash
+   dotnet build
+   ```
+
+4. **Run the application**:
+   ```bash
+   dotnet run
+   ```
+
+5. Open a browser and navigate to `http://localhost:5000` to access the application.
+
+---
+
+## Dependencies
+- **MudBlazor**: For UI components like dialogs, buttons, and text fields.
+- **.NET 8.0 or later**: Required for the Blazor framework to run.
+
+---
+
+
