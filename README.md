@@ -1,5 +1,12 @@
 # Phonebook Application Documentation
 
+## Project Group Members
+1. 224099310 - Goodson Nyasha Mutongi 
+2. 224074946 - Laimi N Shandjuuka
+3. 224082027 - JB Theron
+4. 224017888 - Saara M N Ndakeva
+5. 223087742 - Teofilus NK Mumbashu
+
 ## Project Overview
 This Phonebook Application is a simple yet efficient phonebook management system built using **Blazor** and **MudBlazor**. It allows users to **insert**, **search**, **delete**, **update**, and **sort contacts**, with an emphasis on efficient data structures such as **Hash Tables** and **Tries** for storage and retrieval. We are not connecting to a database as of now
 
