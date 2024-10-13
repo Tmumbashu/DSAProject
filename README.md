@@ -185,7 +185,7 @@ END FUNCTION
 
 ### Prerequisites
 - **.NET SDK**: Download the latest version from [here](https://dotnet.microsoft.com/download).
-- **Node.js**: For frontend development tasks.
+- **Visual Studio IDE**: For development tasks [here](https://visualstudio.microsoft.com/vs/community/).
 
 ### Installation
 1. **Clone the repository**:
