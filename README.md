@@ -25,7 +25,7 @@ Provides helper functions such as sorting, input validation, and handling the di
 - **SearchContact(name)**: Searches for a contact by name in both the Hash Table and Trie.
 - **DeleteContact(name)**: Deletes a contact by name from both the Hash Table and Trie.
 - **UpdateContact(name, newPhone)**: Updates a contact’s phone number.
-- **SortContacts()**: Sorts contacts alphabetically using the Trie’s inherent order or by sorting the hash table output.
+- **SortContacts()**: Sort contacts alphabetically using the Trie’s inherent order or by sorting the hash table output.
 
 ### Utility Module
 - **ValidatePhoneNumber(phone)**: Validates the format of a phone number.
@@ -133,7 +133,7 @@ END FUNCTION
 ## Flowchart
 
 1. **Start**: Begin with system initialization.
-2. **Choose Operation**: User selects an operation (Insert, Search, Delete, Update).
+2. **Choose Operation**: The user selects an operation (Insert, Search, Delete, Update).
 3. **Insert Contact**: Adds a contact node in both the Hash Table and Trie.
 4. **Search Contact**: Searches for the contact by name and displays the result.
 5. **Delete Contact**: Removes contact nodes, handling shared nodes in the Trie if necessary.
