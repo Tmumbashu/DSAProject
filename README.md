@@ -181,6 +181,10 @@ END FUNCTION
 
 ---
 
+### 6. Flowchart
+![image](https://github.com/user-attachments/assets/de14a869-61d6-4660-9a95-bfb42c0142b9)
+
+
 ## Setup Instructions
 
 ### Prerequisites
