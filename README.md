@@ -52,11 +52,8 @@ This module provides helper functions to support the operations:
 
 ### 4. Backup & Restore Module
 - **Manuel Backup**:Enables users to back up their contacts manually to a local or cloud location.
-- 
--**Auto Backup**: Automatically backs up contacts at predefined intervals.
-Restore: Restores contacts from a previously saved backup file or cloud service.
-
--**Restore**:Restores contacts from a previously saved backup file or cloud service.
+- **Auto Backup**: Automatically backs up contacts at predefined intervals.
+- **Restore**:Restores contacts from a previously saved backup file or cloud service.
 
 ## Project Structure
 The project is organized into multiple folders, ensuring modularity and separation of concerns as discussed above:
