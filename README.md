@@ -11,7 +11,7 @@
 This Phonebook Application is a simple yet efficient phonebook management system built using **Blazor** and **MudBlazor**. It allows users to **insert**, **search**, **delete**, **update**, and **sort contacts**, with an emphasis on efficient data structures such as **Hash Tables** and **Tries** for storage and retrieval. We are not connecting to a database as of now
 
 ### Key Features
-- **Contact Management**: Create, update, delete, and search contacts.
+- **Contact Management**: Easily create, update, delete, and search for contacts.
 - **Modular Design**: The app is structured into multiple modules, each focusing on a specific functionality.
 - **Custom Validation**: Phone numbers are validated to ensure they start with '0' and contain exactly 5 digits.
 - **Dialog Management**: Using `MudBlazor` dialogs for creating and editing contacts, providing a smooth UI/UX experience.
@@ -89,16 +89,16 @@ The project is organized into multiple folders, ensuring modularity and separati
 ### Operations Module
 - **InsertContact(name, phone)**: Adds a contact to both the Hash Table and Trie.
 - **SearchContact(name)**: Searches for a contact by name.
-- **DeleteContact(name)**: Deletes a contact by name from both the Hash Table and Trie.
+- **DeleteContact(name)**: Deletes a contact from both the Hash Table and Trie.
 - **UpdateContact(currentName, currentPhone, newName, newPhone)**: Updates an existing contact’s details.
-- **SortContacts()**: Sorts contacts alphabetically using Trie’s inherent order or by sorting the Hash Table output.
+- **SortContacts()**: Sorts contacts alphabetically using Trie’s order or by sorting the Hash Table output.
 
 ### Utility Module
-- **ValidatePhoneNumber(phone)**: Checks if a phone number starts with '0' and is exactly 5 digits long.
+- **ValidatePhoneNumber(phone)**: Ensure the phone number starts with '0' and is exactly 5 digits long.
 - **DisplayContacts()**: Lists all contacts in alphabetical order by performing a depth-first traversal of the Trie or sorting the Hash Table output.
 
 ### Backup & Restore Module
--**Backup**: A user enables automatic cloud backups, which sync their contact list every day.
+-**Backup**: Allow user to enables automatic cloud backups, which sync their contact list every day.
 
 -**Restore**: If the user loses their phone, they can restore all contacts on a new device by logging into their cloud account and selecting the most recent backup.
 
